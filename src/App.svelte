@@ -1,39 +1,46 @@
 <script>
   import { onMount } from 'svelte';
 
-	let colors;
+	var colors = 0;
 
-	let agree = {
-		Id: false,
-		Name: false,
-		Year: false,
-		Color: false,
-		Value: false
+	var agree = {
+		id: false,
+		name: false,
+		year: false,
+		color: false,
+		value: false
 	}
+
+  console.log('agree', agree)
 	
 	function setAgree(){
     setTimeout(() => localStorage.setItem('agree', JSON.stringify(agree)), 1);
 	}
 
   onMount(async () => {
-    setTimeout(() => localStorage.setItem('agree', JSON.stringify(agree)), 1);
+    console.log('onMount', agree)
+    setAgree()
     agree = JSON.parse(localStorage.getItem('agree'))
-    if(agree.Id && agree.Name && agree.Year && agree.Color && agree.Value === true){
+    if(agree.id && agree.name && agree.year && agree.color && agree.value){
       resetColors()
     }
   });
 
   onMount(async () => {
-    let response = await fetch('https://reqres.in/api/unknown?per_page=12')
-		let content = await response.text()
+    const response = await fetch('https://reqres.in/api/unknown?per_page=12')
+		const content = await response.text()
     colors = JSON.parse(content)
   });
 	
 	async function resetColors() {
-		let response = await fetch('https://reqres.in/api/unknown?per_page=12')
-		let content = await response.text()
+		const response = await fetch('https://reqres.in/api/unknown?per_page=12')
+		const content = await response.text()
 		colors = JSON.parse(content)
-		agree.Id = agree.Name = agree.Year = agree.Color = agree.Value = true;
+		agree.id = true;
+    agree.name = true;
+    agree.year = true;
+    agree.color = true;
+    agree.value = true;
     setAgree()
 	}
 
@@ -49,40 +56,40 @@
     <div class="container">
       <div class="title">
         <div class="title__text">Pantone colors</div>
-        <button on:click={resetColors} class:srcImg={agree.Id && agree.Name && agree.Year && agree.Color && agree.Value} class="title__btn"></button>
+        <button on:click={resetColors} class:srcImg={(agree.id && agree.name && agree.year && agree.color && agree.value) === true} class="title__btn"></button>
       </div>
 			{#if colors}
 			<div class="colors">
-        <div class:hide={agree.Id !== true} class="colors__id">
-          <label on:click={setAgree}><input id="id" type="checkbox" bind:checked={agree.Id}>ID</label>
+        <div class:hide={agree.id !== true} class="colors__id">
+          <label on:click={setAgree}><input id="id" type="checkbox" bind:checked={agree.id}>ID</label>
         </div>
-        <div class:hide={agree.Name !== true} class="colors__name">
-          <label on:click={setAgree}><input id="name" type="checkbox" bind:checked={agree.Name}>NAME</label>
+        <div class:hide={agree.name !== true} class="colors__name">
+          <label on:click={setAgree}><input id="name" type="checkbox" bind:checked={agree.name}>NAME</label>
         </div>
-        <div class:hide={agree.Year !== true} class="colors__year">
-          <label on:click={setAgree}><input id="year" type="checkbox" bind:checked={agree.Year}>YEAR</label>
+        <div class:hide={agree.year !== true} class="colors__year">
+          <label on:click={setAgree}><input id="year" type="checkbox" bind:checked={agree.year}>YEAR</label>
         </div>
-        <div class:hide={agree.Color !== true} class="colors__color">
-          <label on:click={setAgree}><input id="color" type="checkbox" bind:checked={agree.Color}>COLOR</label>
+        <div class:hide={agree.color !== true} class="colors__color">
+          <label on:click={setAgree}><input id="color" type="checkbox" bind:checked={agree.color}>COLOR</label>
         </div>
-        <div class:hide={agree.Value !== true} class="colors__value">
-          <label on:click={setAgree}><input id="value" type="checkbox" bind:checked={agree.Value}>VALUE</label>
+        <div class:hide={agree.value !== true} class="colors__value">
+          <label on:click={setAgree}><input id="value" type="checkbox" bind:checked={agree.value}>VALUE</label>
         </div>
       </div>
 			{/if}
       
-      <div class="colors__list" class:hide={(agree.Id || agree.Name || agree.Year || agree.Color || agree.Value) !== true}>
+      <div class="colors__list" class:hide={(agree.id || agree.name || agree.year || agree.color || agree.value) !== true}>
 				{#if colors} 
 				{#each colors.data as color}
 					<div class="colors__item">
-						<div class:hide={agree.Id !== true} class="colors__id">{color.id}</div>
-						<div class:hide={agree.Name !== true} class="colors__name">{capitalize(color.name)}</div>
-						<div class:hide={agree.Year !== true} class="colors__year">{color.year}</div>
-						<div class:hide={agree.Color !== true} class="colors__color">
+						<div class:hide={agree.id !== true} class="colors__id">{color.id}</div>
+						<div class:hide={agree.name !== true} class="colors__name">{capitalize(color.name)}</div>
+						<div class:hide={agree.year !== true} class="colors__year">{color.year}</div>
+						<div class:hide={agree.color !== true} class="colors__color">
 							<div class="colors__color-i" style="background-color: {color.color}"></div>
 							<div>{color.color}</div>
 						</div>
-						<div class:hide={agree.Value !== true} class="colors__value">{color.pantone_value}</div>
+						<div class:hide={agree.value !== true} class="colors__value">{color.pantone_value}</div>
 					</div>
 				{/each}
 				{/if}
@@ -136,7 +143,7 @@
 .title__btn {
   width: 62px;
   height: 22px;
-  background-image: url("/img/reset-on.svg");
+  background-image: url("../img/reset-on.svg");
   background-repeat: no-repeat;
   background-position: center;
 	background-color: #fff;
@@ -147,7 +154,7 @@
 }
 
 .srcImg {
-	background-image: url("/img/reset-off.svg");
+	background-image: url("../img/reset-off.svg");
 }
 .srcImg:hover {
 	cursor: default;
@@ -172,7 +179,7 @@
   padding-left: 8px;
 }
 
-.colors input, .colors__item input {
+.colors input {
   margin-right: 5px;
 }
 
@@ -186,23 +193,23 @@
 	height: 53px;
 }
 
-.colors__id, .colors__item__id {
+.colors__id {
   min-width: 30px;
 }
 
-.colors__name, .colors__item__name {
+.colors__name {
   min-width: 170px;
 }
 
-.colors__year, .colors__item__year {
+.colors__year {
   min-width: 62px;
 }
 
-.colors__color, .colors__item__color {
+.colors__color {
   min-width: 115px;
 }
 
-.colors__value, .colors__item__value {
+.colors__value {
   min-width: 162px;
 }
 
