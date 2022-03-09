@@ -25,11 +25,10 @@
     setAgree()
     console.log('SETAGREE', agree)
     agree = JSON.parse(localStorage.getItem('agree'));
-    
     console.log('AGREEEEEE', agree)
-    if(agree.id && agree.name && agree.year && agree.color && agree.value){
-      console.log('dsadadadsa', agree)
-    }
+    // if(agree.id && agree.name && agree.year && agree.color && agree.value){
+    //   console.log('dsadadadsa', agree)
+    // }
   });
 
   onMount(async () => {
