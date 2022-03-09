@@ -2,14 +2,17 @@
   import { onMount } from 'svelte';
 
 	var colors = 0;
+  var agree = {}
 
-	var agree = {
-		id: false,
-		name: false,
-		year: false,
-		color: false,
-		value: false
-	}
+  function agreeDefault() {
+    agree.id = true;
+    agree.name = true;
+    agree.year = true;
+    agree.color = true;
+    agree.value = true;
+  }
+
+  agreeDefault()
 
   console.log('agree', agree)
 	
@@ -20,9 +23,12 @@
   onMount(async () => {
     console.log('onMount', agree)
     setAgree()
-    agree = JSON.parse(localStorage.getItem('agree'))
+    console.log('SETAGREE', agree)
+    agree = JSON.parse(localStorage.getItem('agree'));
+    
+    console.log('AGREEEEEE', agree)
     if(agree.id && agree.name && agree.year && agree.color && agree.value){
-      resetColors()
+      console.log('dsadadadsa', agree)
     }
   });
 
@@ -36,11 +42,7 @@
 		const response = await fetch('https://reqres.in/api/unknown?per_page=12')
 		const content = await response.text()
 		colors = JSON.parse(content)
-		agree.id = true;
-    agree.name = true;
-    agree.year = true;
-    agree.color = true;
-    agree.value = true;
+		agreeDefault()
     setAgree()
 	}
 
@@ -56,7 +58,7 @@
     <div class="container">
       <div class="title">
         <div class="title__text">Pantone colors</div>
-        <button on:click={resetColors} class:srcImg={(agree.id && agree.name && agree.year && agree.color && agree.value) === true} class="title__btn"></button>
+        <button on:click={resetColors} class="title__btn {(agree.id && agree.name && agree.year && agree.color && agree.value) === true ? 'srcImg' : ''}"></button>
       </div>
 			{#if colors}
 			<div class="colors">
@@ -78,7 +80,7 @@
       </div>
 			{/if}
       
-      <div class="colors__list" class:hide={(agree.id || agree.name || agree.year || agree.color || agree.value) !== true}>
+      <div class="colors__list {(agree.id || agree.name || agree.year || agree.color || agree.value) === true ? '' : 'hide'}">
 				{#if colors} 
 				{#each colors.data as color}
 					<div class="colors__item">
